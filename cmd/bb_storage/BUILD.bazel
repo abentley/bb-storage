@@ -1,5 +1,6 @@
 load("//tools:container.bzl", "container_push_official")
 load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
@@ -43,4 +44,12 @@ container_push_official(
     name = "bb_storage_container_push",
     component = "bb-storage",
     image = ":bb_storage_container",
+)
+
+container_push(
+    name = "push_bb_storage",
+    image = ":bb_storage_container",
+    format = "Docker",
+    registry = "gcr.io/temp-eng/engineering",
+    repository = "bb_storage",
 )

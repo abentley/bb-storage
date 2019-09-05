@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 
+	"google.golang.org/genproto/googleapis/bytestream"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -12,6 +13,7 @@ import (
 // (CAS).
 type BlobAccess interface {
 	Get(ctx context.Context, digest *util.Digest) (int64, io.ReadCloser, error)
+	GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error)
 	Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error
 	Delete(ctx context.Context, digest *util.Digest) error
 	FindMissing(ctx context.Context, digests []*util.Digest) ([]*util.Digest, error)

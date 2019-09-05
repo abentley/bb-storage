@@ -13,6 +13,7 @@ go_library(
         "//pkg/blobstore:go_default_library",
         "//pkg/util:go_default_library",
         "@com_github_lazybeaver_xorshift//:go_default_library",
+        "@go_googleapis//google/bytestream:bytestream_go_proto",
     ],
 )
 

@@ -60,14 +60,19 @@ func NewByteStreamServer(blobAccess blobstore.BlobAccess, readChunkSize int) byt
 
 func (s *byteStreamServer) Read(in *bytestream.ReadRequest, out bytestream.ByteStream_ReadServer) error {
 	if in.ReadOffset != 0 || in.ReadLimit != 0 {
-		return status.Error(codes.Unimplemented, "This service does not support downloading partial files")
+		return status.Error(codes.Unimplemented, "Byte stream server does not support downloading partial files")
 	}
 
 	digest, err := util.NewDigestFromBytestreamPath(in.ResourceName)
 	if err != nil {
 		return err
 	}
-	_, r, err := s.blobAccess.Get(out.Context(), digest)
+	var r io.ReadCloser
+	if in.ReadOffset != 0 || in.ReadLimit != 0 {
+		_, r, err = s.blobAccess.GetPartial(out.Context(), digest, *in)
+	} else {
+		_, r, err = s.blobAccess.Get(out.Context(), digest)
+	}
 	if err != nil {
 		return err
 	}

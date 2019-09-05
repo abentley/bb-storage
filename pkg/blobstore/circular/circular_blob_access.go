@@ -11,6 +11,7 @@ import (
 
 	"go.opencensus.io/trace"
 
+	"google.golang.org/genproto/googleapis/bytestream"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -76,6 +77,10 @@ func (ba *circularBlobAccess) Get(ctx context.Context, digest *util.Digest) (int
 		return length, ba.dataStore.Get(offset, length), nil
 	}
 	return 0, nil, status.Errorf(codes.NotFound, "Blob not found")
+}
+
+func (ba *circularBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
+		return 0, nil, status.Error(codes.Unimplemented, "circularBlobAccess does not support downloading partial files")
 }
 
 func (ba *circularBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

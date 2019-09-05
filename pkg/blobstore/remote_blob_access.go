@@ -10,6 +10,7 @@ import (
 
 	"golang.org/x/net/context/ctxhttp"
 
+	"google.golang.org/genproto/googleapis/bytestream"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -51,6 +52,10 @@ func (ba *remoteBlobAccess) Get(ctx context.Context, digest *util.Digest) (int64
 		resp.Body.Close()
 		return 0, nil, convertHTTPUnexpectedStatus(resp)
 	}
+}
+
+func (ba *remoteBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error)  {
+		return 0, nil, status.Error(codes.Unimplemented, "remoteBlobAccess does not support downloading partial files")
 }
 
 func (ba *remoteBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

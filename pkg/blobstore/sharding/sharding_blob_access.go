@@ -6,6 +6,8 @@ import (
 
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/util"
+
+	"google.golang.org/genproto/googleapis/bytestream"
 )
 
 type shardingBlobAccess struct {
@@ -48,6 +50,9 @@ func (ba *shardingBlobAccess) Get(ctx context.Context, digest *util.Digest) (int
 	return ba.getBackend(digest).Get(ctx, digest)
 }
 
+func (ba *shardingBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
+	return ba.getBackend(digest).GetPartial(ctx, digest, readRequest)
+}
 func (ba *shardingBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {
 	return ba.getBackend(digest).Put(ctx, digest, sizeBytes, r)
 }

@@ -9,6 +9,7 @@ import (
 	"gocloud.dev/blob"
 	"gocloud.dev/gcerrors"
 
+	"google.golang.org/genproto/googleapis/bytestream"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -38,6 +39,10 @@ func (ba *cloudBlobAccess) Get(ctx context.Context, digest *util.Digest) (int64,
 		return 0, nil, err
 	}
 	return result.Size(), result, err
+}
+
+func (ba *cloudBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
+		return 0, nil, status.Error(codes.Unimplemented, "cloudBlobAccess does not support downloading partial files")
 }
 
 func (ba *cloudBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

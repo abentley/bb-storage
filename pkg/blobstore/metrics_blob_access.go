@@ -8,6 +8,9 @@ import (
 
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/prometheus/client_golang/prometheus"
+	"google.golang.org/genproto/googleapis/bytestream"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -69,6 +72,10 @@ func (ba *metricsBlobAccess) Get(ctx context.Context, digest *util.Digest) (int6
 	length, r, err := ba.blobAccess.Get(ctx, digest)
 	ba.blobAccessOperationsDurationSecondsGet.Observe(time.Now().Sub(timeStart).Seconds())
 	return length, r, err
+}
+
+func (ba *metricsBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
+		return 0, nil, status.Error(codes.Unimplemented, "metricsBlobAccess does not support downloading partial files")
 }
 
 func (ba *metricsBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

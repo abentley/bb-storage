@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"google.golang.org/genproto/googleapis/bytestream"
 )
 
 type sizeDistinguishingBlobAccess struct {
@@ -31,6 +32,13 @@ func (ba *sizeDistinguishingBlobAccess) Get(ctx context.Context, digest *util.Di
 		return ba.smallBlobAccess.Get(ctx, digest)
 	}
 	return ba.largeBlobAccess.Get(ctx, digest)
+}
+
+func (ba *sizeDistinguishingBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error){
+	if digest.GetSizeBytes() <= ba.cutoffSizeBytes {
+		return ba.smallBlobAccess.GetPartial(ctx, digest, readRequest)
+	}
+	return ba.largeBlobAccess.GetPartial(ctx, digest, readRequest)
 }
 
 func (ba *sizeDistinguishingBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

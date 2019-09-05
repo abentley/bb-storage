@@ -34,6 +34,7 @@ func (ac *blobAccessActionCache) GetActionResult(ctx context.Context, digest *ut
 	data, err := ioutil.ReadAll(r)
 	r.Close()
 	if err != nil {
+		log.Printf("Unable to retrieve blob %s", digest)
 		return nil, err
 	}
 	var actionResult remoteexecution.ActionResult

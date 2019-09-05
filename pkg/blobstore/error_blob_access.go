@@ -6,6 +6,9 @@ import (
 	"log"
 
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"google.golang.org/genproto/googleapis/bytestream"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type errorBlobAccess struct {
@@ -26,6 +29,10 @@ func NewErrorBlobAccess(err error) BlobAccess {
 
 func (ba *errorBlobAccess) Get(ctx context.Context, digest *util.Digest) (int64, io.ReadCloser, error) {
 	return 0, nil, ba.err
+}
+
+func (ba *errorBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
+		return 0, nil, status.Error(codes.Unimplemented, "errorBlobAccess does not support downloading partial files")
 }
 
 func (ba *errorBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

@@ -9,7 +9,9 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/go-redis/redis"
 
+	"google.golang.org/genproto/googleapis/bytestream"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type redisBlobAccess struct {
@@ -38,6 +40,10 @@ func (ba *redisBlobAccess) Get(ctx context.Context, digest *util.Digest) (int64,
 		return 0, nil, util.StatusWrapWithCode(err, codes.Unavailable, "Failed to get blob")
 	}
 	return int64(len(value)), ioutil.NopCloser(bytes.NewBuffer(value)), nil
+}
+
+func (ba *redisBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
+		return 0, nil, status.Error(codes.Unimplemented, "redisBlobAccess does not support downloading partial files")
 }
 
 func (ba *redisBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

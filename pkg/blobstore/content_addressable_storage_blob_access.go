@@ -63,8 +63,7 @@ func (r *byteStreamBlobReader) Close() error {
 	return nil
 }
 
-func (ba *contentAddressableStorageBlobAccess) Get(ctx context.Context, digest *util.Digest) (int64, io.ReadCloser, error) {
-	var readRequest bytestream.ReadRequest
+func (ba *contentAddressableStorageBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
 	sizeBytes := digest.GetSizeBytes()
 	if instance := digest.GetInstance(); instance == "" {
 		readRequest.ResourceName = fmt.Sprintf("blobs/%s/%d", digest.GetHashString(), sizeBytes)
@@ -87,6 +86,11 @@ func (ba *contentAddressableStorageBlobAccess) Get(ctx context.Context, digest *
 		client:  client,
 		partial: chunk.Data,
 	}, nil
+}
+
+func (ba *contentAddressableStorageBlobAccess) Get(ctx context.Context, digest *util.Digest) (int64, io.ReadCloser, error) {
+	var readRequest bytestream.ReadRequest
+	return ba.GetPartial(ctx, digest, readRequest)
 }
 
 func (ba *contentAddressableStorageBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

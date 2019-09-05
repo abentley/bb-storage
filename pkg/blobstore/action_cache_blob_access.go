@@ -10,6 +10,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/golang/protobuf/proto"
 
+	"google.golang.org/genproto/googleapis/bytestream"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -43,6 +44,10 @@ func (ba *actionCacheBlobAccess) Get(ctx context.Context, digest *util.Digest) (
 		return 0, nil, err
 	}
 	return int64(len(data)), ioutil.NopCloser(bytes.NewBuffer(data)), nil
+}
+
+func (ba *actionCacheBlobAccess) GetPartial(ctx context.Context, digest *util.Digest, readRequest bytestream.ReadRequest) (int64, io.ReadCloser, error) {
+		return 0, nil, status.Error(codes.Unimplemented, "actionCacheBlobAccess does not support downloading partial files")
 }
 
 func (ba *actionCacheBlobAccess) Put(ctx context.Context, digest *util.Digest, sizeBytes int64, r io.ReadCloser) error {

@@ -49,5 +49,6 @@ go_library(
         "@com_github_golang_mock//gomock:go_default_library",
         "@go_googleapis//google/longrunning:longrunning_go_proto",
         "@org_golang_google_grpc//metadata:go_default_library",
+        "@go_googleapis//google/bytestream:bytestream_go_proto",
     ],
 )
